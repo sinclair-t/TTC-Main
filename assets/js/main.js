@@ -1218,7 +1218,9 @@
 
   }
 
-  rtsJs.m();
+  $(document).ready(function() {
+    rtsJs.m();
+  });
 })(jQuery, window)
 
 
