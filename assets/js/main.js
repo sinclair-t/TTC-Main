@@ -1,1231 +1,792 @@
-/*=== Javascript function indexing hear===========
-
-1.counterUp ----------(Its use for counting number)
-2.stickyHeader -------(header class sticky)
-3.wowActive ----------( Waw js plugins activation)
-4.swiperJs -----------(All swiper in this website hear)
-5.salActive ----------(Sal animation for card and all text)
-6.textChanger --------(Text flip for banner section)
-7.timeLine -----------(History Time line)
-8.datePicker ---------(On click date calender)
-9.timePicker ---------(On click time picker)
-10.timeLineStory -----(History page time line)
-11.vedioActivation----(Vedio activation)
-12.searchOption ------(search open)
-13.cartBarshow -------(Cart sode bar)
-14.sideMenu ----------(Open side menu for desktop)
-15.Back to top -------(back to top)
-16.filterPrice -------(Price filtering)
-
-==================================================*/
-
-(function ($) {
-  'use strict';
-
-  var rtsJs = {
-    m: function (e) {
-      rtsJs.d();
-      rtsJs.methods();
-    },
-    d: function (e) {
-      this._window = $(window),
-        this._document = $(document),
-        this._body = $('body'),
-        this._html = $('html')
-    },
-    methods: function (e) {
-      // rtsJs.preloader();
-      rtsJs.countDown();
-      rtsJs.filterPrice();
-      rtsJs.galleryPopUp();
-      rtsJs.galleryPopUpmag();
-      rtsJs.timeLineStory();
-      rtsJs.vedioActivation();
-      rtsJs.odoMeter();
-      rtsJs.searchOption();
-      rtsJs.metismenu();
-      rtsJs.swiperActive();
-      rtsJs.wowActive();
-      rtsJs.stickyHeader();
-      rtsJs.backToTopInit();
-      rtsJs.sideMenu();
-      rtsJs.menuCurrentLink();
-      rtsJs.imageSwipe();
-      rtsJs.niceSelect();
-      rtsJs.portfolioHOver();
-      rtsJs.cartBarshow();
-      rtsJs.smoothScroll();
-      rtsJs.rtlToggle();
-    },
-    // preloader: function () {
-
-    //   var preload = $("#elevate-load");
-
-    //   if (preload.length) {
-    //     window.addEventListener('load', function () {
-    //       document.querySelector('#elevate-load').classList.add("loaded");
-    //     });
-    //   };
-
-    // },
-    smoothScroll: function (e) {
-      $(document).on('click', '.onepage a[href^="#"]', function (event) {
-        event.preventDefault();
-
-        $('html, body').animate({
-          scrollTop: $($.attr(this, 'href')).offset().top
-        }, 2000);
-      });
-    },
-    countDown: function () {
-
-      let countDown = document.getElementsByClassName('countdown');
-      if (countDown.length) {
-        document.addEventListener("DOMContentLoaded", function () {
-          // Get the countdown element and the end date from its attribute
-          const countdownElement = document.getElementById("countdown");
-          const endDate = countdownElement.getAttribute("data-end-date");
-          const endTime = new Date(endDate).getTime();
-
-          if (isNaN(endTime)) {
-            document.querySelector(".timer-section").innerHTML = "Invalid end date!";
-            return;
-          }
-
-          // Get references to the time unit elements
-          const daysElement = document.getElementById("days");
-          const hoursElement = document.getElementById("hours");
-          const minutesElement = document.getElementById("minutes");
-          const secondsElement = document.getElementById("seconds");
-
-          // Update the countdown every second
-          const countdownInterval = setInterval(() => {
-            const currentTime = new Date().getTime();
-            const timeDifference = endTime - currentTime;
-
-            // Calculate days, hours, minutes, and seconds
-            const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-            const hours = Math.floor(
-              (timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-            );
-            const minutes = Math.floor(
-              (timeDifference % (1000 * 60 * 60)) / (1000 * 60)
-            );
-            const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
-
-            // Update the timer elements
-            if (timeDifference > 0) {
-              daysElement.textContent = days;
-              hoursElement.textContent = hours;
-              minutesElement.textContent = minutes;
-              secondsElement.textContent = seconds;
-            } else {
-              // Clear the interval and display "Time's up" when countdown ends
-              clearInterval(countdownInterval);
-              document.querySelector(".timer-section").innerHTML = "Time's up!";
-            }
-          }, 1000);
-        });
-      }
-    },
-    filterPrice: function () {
-      var filter_price = $('.filter-price');
-      if (filter_price.length) {
-        var lowerSlider = document.querySelector('#lower');
-        var upperSlider = document.querySelector('#upper');
-
-        document.querySelector('#two').value = upperSlider.value;
-        document.querySelector('#one').value = lowerSlider.value;
-
-        var lowerVal = parseInt(lowerSlider.value);
-        var upperVal = parseInt(upperSlider.value);
-
-        upperSlider.oninput = function () {
-          lowerVal = parseInt(lowerSlider.value);
-          upperVal = parseInt(upperSlider.value);
-
-          if (upperVal < lowerVal + 4) {
-            lowerSlider.value = upperVal - 4;
-            if (lowerVal == lowerSlider.min) {
-              upperSlider.value = 4;
-            }
-          }
-          document.querySelector('#two').value = this.value
-        };
-
-        lowerSlider.oninput = function () {
-          lowerVal = parseInt(lowerSlider.value);
-          upperVal = parseInt(upperSlider.value);
-          if (lowerVal > upperVal - 4) {
-            upperSlider.value = lowerVal + 4;
-            if (upperVal == upperSlider.max) {
-              lowerSlider.value = parseInt(upperSlider.max) - 4;
-            }
-          }
-          document.querySelector('#one').value = this.value
-        };
-      }
-    },
-    galleryPopUp: function (e) {
-      // Gallery image hover
-      $(".img-wrapper").hover(
-        function () {
-          $(this).find(".img-overlay").animate({ opacity: 1 }, 600);
-        }, function () {
-          $(this).find(".img-overlay").animate({ opacity: 0 }, 600);
-        }
-      );
-
-      // Lightbox
-      var $overlay = $('<div id="overlay"></div>');
-      var $image = $("<img>");
-      var $prevButton = $('<div id="prevButton"><i class="fa fa-chevron-left"></i></div>');
-      var $nextButton = $('<div id="nextButton"><i class="fa fa-chevron-right"></i></div>');
-      var $exitButton = $('<div id="exitButton"><i class="fa fa-times"></i></div>');
-
-      // Add overlay
-      $overlay.append($image).prepend($prevButton).append($nextButton).append($exitButton);
-      $("#gallery").append($overlay);
-
-      // Hide overlay on default
-      $overlay.hide();
-
-      // When an image is clicked
-      $(".img-overlay").click(function (event) {
-        // Prevents default behavior
-        event.preventDefault();
-        // Adds href attribute to variable
-        var imageLocation = $(this).prev().attr("href");
-        // Add the image src to $image
-        $image.attr("src", imageLocation);
-        // Fade in the overlay
-        $overlay.fadeIn("slow");
-      });
-
-      // When the overlay is clicked
-      $overlay.click(function () {
-        // Fade out the overlay
-        $(this).fadeOut("slow");
-      });
-
-      // When next button is clicked
-      $nextButton.click(function (event) {
-        // Hide the current image
-        $("#overlay img").hide();
-        // Overlay image location
-        var $currentImgSrc = $("#overlay img").attr("src");
-        // Image with matching location of the overlay image
-        var $currentImg = $('#image-gallery img[src="' + $currentImgSrc + '"]');
-        // Finds the next image
-        var $nextImg = $($currentImg.closest(".image").next().find("img"));
-        // All of the images in the gallery
-        var $images = $("#image-gallery img");
-        // If there is a next image
-        if ($nextImg.length > 0) {
-          // Fade in the next image
-          $("#overlay img").attr("src", $nextImg.attr("src")).fadeIn(800);
-        } else {
-          // Otherwise fade in the first image
-          $("#overlay img").attr("src", $($images[0]).attr("src")).fadeIn(800);
-        }
-        // Prevents overlay from being hidden
-        event.stopPropagation();
-      });
-
-      // When previous button is clicked
-      $prevButton.click(function (event) {
-        // Hide the current image
-        $("#overlay img").hide();
-        // Overlay image location
-        var $currentImgSrc = $("#overlay img").attr("src");
-        // Image with matching location of the overlay image
-        var $currentImg = $('#image-gallery img[src="' + $currentImgSrc + '"]');
-        // Finds the next image
-        var $nextImg = $($currentImg.closest(".image").prev().find("img"));
-        // Fade in the next image
-        $("#overlay img").attr("src", $nextImg.attr("src")).fadeIn(800);
-        // Prevents overlay from being hidden
-        event.stopPropagation();
-      });
-
-      // When the exit button is clicked
-      $exitButton.click(function () {
-        // Fade out the overlay
-        $("#overlay").fadeOut("slow");
-      });
-    },
-    // story page timeline
-    timeLineStory: function () {
-      (function () {
-
-        'use strict';
-
-        // define variables
-        var items = document.querySelectorAll(".timeline li");
-
-        // check if an element is in viewport
-        // http://stackoverflow.com/questions/123999/how-to-tell-if-a-dom-element-is-visible-in-the-current-viewport
-        function isElementInViewport(el) {
-          var rect = el.getBoundingClientRect();
-          return (
-            rect.top >= 0 &&
-            rect.left >= 0 &&
-            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-            rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-          );
-        }
-
-        function callbackFunc() {
-          for (var i = 0; i < items.length; i++) {
-            if (isElementInViewport(items[i])) {
-              items[i].classList.add("in-view");
-            }
-          }
-        }
-
-        // listen for events
-        window.addEventListener("load", callbackFunc);
-        window.addEventListener("resize", callbackFunc);
-        window.addEventListener("scroll", callbackFunc);
-
-      })();
+<!DOCTYPE html>
+<html lang="en">
 
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/x-icon" href="assets/images/fav.png">
+    <title>Elever - Construction Building & Renovation HTML Template</title>
+    <!-- fontawesome css -->
+    <link rel="stylesheet" preload href="assets/css/plugins/fontawesome.css">
+    <link rel="stylesheet" preload href="assets/css/plugins/aos.css">
+    <!-- swiper css-->
+    <link rel="stylesheet" preload href="assets/css/plugins/odometer.css">
+    <link rel="stylesheet" preload href="assets/css/plugins/swiper.css">
+    <link rel="stylesheet" preload href="assets/css/plugins/metismenu.css">
+    <link rel="stylesheet" preload href="assets/css/plugins/magnifying-popup.css">
 
-    },
-    vedioActivation: function (e) {
-      $('#play-video, .play-video').on('click', function (e) {
-        e.preventDefault();
-        $('.video-overlay').addClass('open');
-        $(".video-overlay").append('<iframe width="560" height="315" src="https://www.youtube.com/embed/Giek094C_l4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>');
-      });
+    <!-- bootstrap css -->
+    <link rel="stylesheet" preload href="assets/css/vendor/bootstrap.min.css">
+    <!-- custom css here -->
+    <link rel="stylesheet" preload href="assets/css/style.css">
+</head>
 
-      $('.video-overlay, .video-overlay-close').on('click', function (e) {
-        e.preventDefault();
-        close_video();
-      });
+<body class="inner">
+    <!-- header area start -->
+    <header class="heder-one">
+    <div class="header-two-container">
+        <div class="row">
+            <div class="col-12">
+                <div class="header-main-wrapper">
+                    <div class="logo-area">
+                        <a href="index.html" class="logo">
+                            <img src="assets/images/logo/01.svg" alt="image-logo">
+                        </a>
+                    </div>
+                    <!-- header right start -->
+                    <div class="rts-header-right position-static">
 
-      $(document).keyup(function (e) {
-        if (e.keyCode === 27) {
-          close_video();
-        }
-      });
+                        <!-- top header -->
+                        <div class="top">
 
-      function close_video() {
-        $('.video-overlay.open').removeClass('open').find('iframe').remove();
-      };
-    },
-    odoMeter: function () {
-      $(document).ready(function () {
-        function isInViewport(element) {
-          const rect = element.getBoundingClientRect();
-          return (
-            rect.top >= 0 &&
-            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)
-          );
-        }
-
-        function triggerOdometer(element) {
-          const $element = $(element);
-          if (!$element.hasClass('odometer-triggered')) {
-            const countNumber = $element.attr('data-count');
-            $element.html(countNumber);
-            $element.addClass('odometer-triggered'); // Add a class to prevent re-triggering
-          }
-        }
-
-        function handleOdometer() {
-          $('.odometer').each(function () {
-            if (isInViewport(this)) {
-              triggerOdometer(this);
-            }
-          });
-        }
-
-        // Check on page load
-        handleOdometer();
-
-        // Check on scroll
-        $(window).on('scroll', function () {
-          handleOdometer();
-        });
-      });
-
-
-    },
-
-    // search popup
-    searchOption: function () {
-      $(document).on('click', '.search', function () {
-        $(".search-input-area").addClass("show");
-        $("#anywhere-home").addClass("bgshow");
-      });
-      $(document).on('click', '#close', function () {
-        $(".search-input-area").removeClass("show");
-        $("#anywhere-home").removeClass("bgshow");
-      });
-      $(document).on('click', '#anywhere-home', function () {
-        $(".search-input-area").removeClass("show");
-        $("#anywhere-home").removeClass("bgshow");
-      });
-
-    },
-    metismenu: function () {
-      $('#mobile-menu-active').metisMenu();
-    },
-
-    swiperActive: function () {
-      $(document).ready(function () {
-
-        var sliderThumbnail = new Swiper(".slider-thumbnail", {
-          spaceBetween: 30,
-          slidesPerView: 3,
-          freeMode: true,
-          watchSlidesVisibility: true,
-          watchSlidesProgress: true,
-          breakpoints: {
-            991: {
-              spaceBetween: 30,
-            },
-            320: {
-              spaceBetween: 15,
-            }
-          },
-        });
-
-        var swiper = new Swiper(".swiper-container-h12", {
-          thumbs: {
-            swiper: sliderThumbnail,
-          },
-        });
-
-      });
+                            <div class="end-top">
+                                <div class="single-info">
+                                    <div class="icon">
+                                        <i class="fa-light fa-mobile"></i>
+                                    </div>
+                                    <a href="tel:+19723609250">+1(972) 360-9250</a>
+                                </div>
+                                <div class="single-info">
+                                    <div class="icon"><i class="fa-regular fa-envelope"></i></div>
+                                    <a href="mailto:info@takestwoconstruction.com">info@takestwoconstruction.com</a>
+                                </div>
+                            </div>
+                            <div class="start-top">
+                                <div class="social-header">
+                                    <span>Follow Us On:</span>
+                                    <ul>
+                                        <li><a href="index.html#"><i class="fa-brands fa-facebook-f"></i></a></li>
+                                        <li><a href="index.html#"><i class="fa-brands fa-linkedin-in"></i></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- top header end -->
+                        <!-- bottom header start -->
+                        <div class="bottom">
+                            <!-- header style two -->
+                            <!-- nav area start -->
+                            <div class="nav-area">
+        <ul class="">
 
 
+            <li class="main-nav"><a href="about.html">Our Company</a></li>
+            <li class="main-nav has-dropdown mega-menu">
+                <a href="">Service</a>
+                <div class="rts-mega-menu service-mega-menu-style">
+                    <div class="wrapper">
+                        <div class="container">
+                            <div class="row g-5">
+                                <div class="col-lg-4">
+                                    <ul class="mega-menu-item with-list parent-nav">
+                                        <li class="hega-menu-head-wrapper">
+                                            <p class="hega-menu-head"><i class="fa-regular fa-folder-open"></i> Our Approach</p>
+                                        </li>
+                                        <li><a href="Preconstruction.html"><i
+                                                    class="fa-sharp fa-regular fa-chevron-right"></i>Preconstruction</a></li>
+                                        <li><a href="Construction-management.html"><i
+                                                    class="fa-sharp fa-regular fa-chevron-right"></i>Construction Management</a></li>
 
-      $(document).ready(function () {
-        var swiper = new Swiper(".mySwiper-pd-slider", {
-          speed: 1600,
-          slidesPerView: 1,
-          spaceBetween: 0,
-          loop: true,
-          autoplay: false,
-          keyboard: {
-            enabled: true,
-            onlyInViewport: true
-          },
-          navigation: {
-            nextEl: ".swiper-button-next",
-            prevEl: ".swiper-button-prev",
-          },
-          autoplay: {
-            delay: 2500,
-            disableOnInteraction: false,
-          },
-        });
-      });
-      $(document).ready(function () {
-        var swiper = new Swiper(".swiper-vision", {
-          direction: "horizontal",
-          effect: "slide",
-          speed: 1600,
-          slidesPerView: 1,
-          spaceBetween: 0,
-          slidesPerGroup: 1,
-          centeredSlides: true,
-          loop: true,
-          autoplay: false,
-          keyboard: {
-            enabled: true,
-            onlyInViewport: true
-          },
-          loopFillGroupWithBlank: true,
-          pagination: {
-            el: ".swiper-pagination",
-            clickable: true,
-            autoplay: false,
-          },
-        });
-      });
-      $(document).ready(function () {
-        var swiper = new Swiper(".mySwiper-banner-one", {
-          spaceBetween: 0,
-          slidesPerView: 1,
-          loop: true,
-          speed: 1000,
-          effect: "fade",
-          pagination: {
-            el: ".swiper-paginations",
-            clickable: true,
-            renderBullet: function (index, className) {
-              return '<span class="' + className + '">' + "0" + (index + 1) + "</span>";
-            },
-          },
-        });
+                                        <li><a href="Project-management.html"><i
+                                                    class="fa-sharp fa-regular fa-chevron-right"></i>
+                                                Project Management</a></li>
+                                    
+                                    </ul>
+                                </div>
+                                <div class="col-lg-4">
+                                    <ul class="mega-menu-item with-list parent-nav">
+                                        <li class="hega-menu-head-wrapper">
+                                            <p class="hega-menu-head"><i class="fa-regular fa-folder-open"></i> Expertise</p>
+                                        </li>
+                                        <li><a href="Custom-home-renovations.html"><i
+                                                    class="fa-sharp fa-regular fa-chevron-right"></i>Custom Home Renovations</a>
+                                        </li>
+                                        <li><a href="Custom-pools-spas.html"><i
+                                                    class="fa-sharp fa-regular fa-chevron-right"></i>Custom Pools & Spas</a>
+                                        </li>
+                                        <li><a href="Outdoor-living.html"><i
+                                                    class="fa-sharp fa-regular fa-chevron-right"></i>Outdoor Living Spaces</a></li>
+                                        <li><a href="Concrete-masonry.html"><i
+                                                    class="fa-sharp fa-regular fa-chevron-right"></i>Concrete & Masonry</a></li>
+                                        <li><a href="Roofing-exterior-upgrades.html"><i
+                                                    class="fa-sharp fa-regular fa-chevron-right"></i>Roofing & Exterior Upgrades
+                                            </a></li>
+                                        <li><a href="Project-management-permitting.html"><i
+                                                    class="fa-sharp fa-regular fa-chevron-right"></i>Project Management & Permitting
+                                            </a></li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="col-lg-4">
+                                    <div class="menu-thumb pl--20">
+                                        <img src="assets/images/service/10.webp" alt="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li class="main-nav"><a href="project.html">Projects</a></li>
+            <li class="main-nav"><a href="blog-grid.html">News & Insights</a></li>
+            <li class="main-nav"><a href="careers.html">Careers</a></li>
+
+
         
-        // Video background functionality
-        var heroVideo = document.querySelector('.hero-bg-video video');
-        if (heroVideo) {
-          // Ensure video plays when loaded
-          heroVideo.addEventListener('loadeddata', function() {
-            heroVideo.play().catch(function(error) {
-              console.log('Video autoplay failed:', error);
-            });
-          });
-          
-          // Pause video when slide is not active (for performance)
-          swiper.on('slideChange', function() {
-            if (swiper.activeIndex === 0) {
-              heroVideo.play().catch(function(error) {
-                console.log('Video play failed:', error);
-              });
-            } else {
-              heroVideo.pause();
-            }
-          });
-        }
-      });
-      $(document).ready(function () {
-        var swiper = new Swiper(".mySwiper-banner-five", {
-          spaceBetween: 0,
-          slidesPerView: 1,
-          loop: true,
-          speed: 1000,
-          // autoplay: {
-          //   delay: 3000,
-          //   disableOnInteraction: false,
-          // },
-          // effect: "fade",
-          pagination: {
-            el: ".swiper-pagination",
-            clickable: true,
-          },
-        });
-      });
-      $(document).ready(function () {
-        var swiper = new Swiper(".mySwiper-estimonias-inner", {
-          spaceBetween: 0,
-          slidesPerView: 1,
-          loop: true,
-          speed: 1000,
-          navigation: {
-            nextEl: ".swiper-button-next",
-            prevEl: ".swiper-button-prev",
-          },
-        });
-      });
-      $(document).ready(function () {
-        var swiper = new Swiper(".mySwiper-service-one", {
-          spaceBetween: 30,
-          slidesPerView: 3,
-          loop: true,
-          speed: 1000,
-          // autoplay: {
-          //   delay: 3000,
-          //   disableOnInteraction: false,
-          // },
-          navigation: {
-            nextEl: ".swiper-button-next",
-            prevEl: ".swiper-button-prev",
-          },
-          pagination: {
-            el: ".swiper-pagination",
-            clickable: true,
-          },
-          breakpoints: {
-            1500: {
-              slidesPerView: 3,
-            },
-            1199: {
-              slidesPerView: 3,
-            },
-            991: {
-              slidesPerView: 2,
-            },
-            767: {
-              slidesPerView: 2,
-            },
-            575: {
-              slidesPerView: 1,
-            },
-            0: {
-              slidesPerView: 1,
-            }
-          },
-        });
-      });
-      $(document).ready(function () {
-        var swiper = new Swiper(".mySwiper-case-5", {
-          spaceBetween: 24,
-          slidesPerView: 4,
-          loop: true,
-          speed: 1000,
-          centeredSlides: true,
-          navigation: {
-            nextEl: ".swiper-button-next",
-            prevEl: ".swiper-button-prev",
-          },
-          breakpoints: {
-            1500: {
-              slidesPerView: 2.6,
-            },
-            1199: {
-              slidesPerView: 1.2,
-            },
-            991: {
-              slidesPerView: 1.1,
-            },
-            767: {
-              slidesPerView: 1.1,
-            },
-            575: {
-              slidesPerView: 1,
-            },
-            0: {
-              slidesPerView: 1,
-            }
-          },
-        });
-      });
-      $(document).ready(function () {
-        var swiper = new Swiper(".mySwiper-team-5", {
-          spaceBetween: 24,
-          slidesPerView: 4,
-          loop: true,
-          speed: 1000,
-          navigation: {
-            nextEl: ".swiper-button-next",
-            prevEl: ".swiper-button-prev",
-          },
-          breakpoints: {
-            1500: {
-              slidesPerView: 4,
-            },
-            1199: {
-              slidesPerView: 3,
-            },
-            991: {
-              slidesPerView: 3,
-            },
-            767: {
-              slidesPerView: 2,
-            },
-            575: {
-              slidesPerView: 1,
-            },
-            0: {
-              slidesPerView: 1,
-            }
-          },
-        });
-      });
-      $(document).ready(function () {
-        var swiper = new Swiper(".mySwiper-testimonails-5", {
-          spaceBetween: 24,
-          slidesPerView: 2,
-          loop: true,
-          speed: 1000,
-          navigation: {
-            nextEl: ".swiper-button-next",
-            prevEl: ".swiper-button-prev",
-          },
-          breakpoints: {
-            1500: {
-              slidesPerView: 2,
-            },
-            1199: {
-              slidesPerView: 2,
-            },
-            991: {
-              slidesPerView: 2,
-            },
-            767: {
-              slidesPerView: 1,
-            },
-            575: {
-              slidesPerView: 1,
-            },
-            0: {
-              slidesPerView: 1,
-            }
-          },
-        });
-      });
-      $(document).ready(function () {
-        var swiper = new Swiper(".mySwiper-portfolio-two", {
-          spaceBetween: 24,
-          slidesPerView: 2,
-          loop: true,
-          speed: 1000,
-          navigation: {
-            nextEl: ".swiper-button-next",
-            prevEl: ".swiper-button-prev",
-          },
-          breakpoints: {
-            1500: {
-              slidesPerView: 2,
-            },
-            1199: {
-              slidesPerView: 2,
-            },
-            991: {
-              slidesPerView: 1,
-            },
-            767: {
-              slidesPerView: 1,
-            },
-            575: {
-              slidesPerView: 1,
-            },
-            0: {
-              slidesPerView: 1,
-            }
-          },
-        });
-      });
-      $(document).ready(function () {
-        var swiper = new Swiper(".mySwiper-project-1", {
-          spaceBetween: 40,
-          slidesPerView: 2.5,
-          loop: true,
-          speed: 1000,
-          centeredSlides: true,
-          autoplay: {
-            delay: 2500,
-            disableOnInteraction: false,
-          },
-          breakpoints: {
-            1500: {
-              slidesPerView: 2.5,
-            },
-            1199: {
-              slidesPerView: 3,
-            },
-            991: {
-              slidesPerView: 1.5,
-            },
-            767: {
-              slidesPerView: 1.5,
-            },
-            575: {
-              slidesPerView: 1,
-            },
-            0: {
-              slidesPerView: 1,
-            }
-          },
-        });
-      });
-      $(document).ready(function () {
-        var swiper = new Swiper(".mySwiper-brand-1", {
-          spaceBetween: 103,
-          slidesPerView: 6,
-          loop: true,
-          speed: 1000,
-          autoplay: {
-            delay: 2500,
-            disableOnInteraction: false,
-          },
-          breakpoints: {
-            1500: {
-              slidesPerView: 6,
-            },
-            1199: {
-              slidesPerView: 6,
-            },
-            991: {
-              slidesPerView: 5,
-            },
-            767: {
-              slidesPerView: 4,
-            },
-            575: {
-              slidesPerView: 3,
-            },
-            0: {
-              slidesPerView: 2,
-            }
-          },
-        });
-      });
-      $(document).ready(function () {
-        var swiper = new Swiper(".mySwiper-testimonails", {
-          spaceBetween: 24,
-          slidesPerView: 2,
-          loop: true,
-          speed: 1000,
-          // autoplay: {
-          //   delay: 2500,
-          //   disableOnInteraction: false,
-          // },
-          navigation: {
-            nextEl: ".swiper-button-next",
-            prevEl: ".swiper-button-prev",
-          },
-          breakpoints: {
-            1500: {
-              slidesPerView: 2,
-            },
-            1199: {
-              slidesPerView: 2,
-            },
-            991: {
-              slidesPerView: 2,
-            },
-            767: {
-              slidesPerView: 1,
-            },
-            575: {
-              slidesPerView: 1,
-            },
-            0: {
-              slidesPerView: 1,
-            }
-          },
-        });
-      });
-      $(document).ready(function () {
-        var swiper = new Swiper(".mySwiper-banner2", {
-          spaceBetween: 0,
-          slidesPerView: 1,
-          loop: true,
-          speed: 1500,
-          effect: "fade",
-          autoplay: {
-            delay: 4500,
-            disableOnInteraction: false,
-          },
-          pagination: {
-            el: ".swiper-pagination",
-            clickable: true,
-          },
-        });
-      });
-      $(document).ready(function () {
-        var swiper = new Swiper(".mySwiper-banner-factrory", {
-          spaceBetween: 0,
-          slidesPerView: 1,
-          loop: true,
-          speed: 1500,
-          effect: "fade",
-          autoplay: {
-            delay: 4500,
-            disableOnInteraction: false,
-          },
-          pagination: {
-            el: ".swiper-pagination",
-            clickable: true,
-          },
-          navigation: {
-            nextEl: ".swiper-button-next",
-            prevEl: ".swiper-button-prev",
-          },
-        });
-      });
-      $(document).ready(function () {
-        var swiper = new Swiper(".mySwiper-testimonails-3", {
-          spaceBetween: 0,
-          slidesPerView: 1,
-          loop: true,
-          speed: 1000,
-          autoplay: {
-            delay: 3000,
-            disableOnInteraction: false,
-          },
-          navigation: {
-            nextEl: ".swiper-button-next",
-            prevEl: ".swiper-button-prev",
-          },
-        });
-      });
-      $(document).ready(function () {
-        var swiper = new Swiper(".mySwiper-testimonails-4", {
-          spaceBetween: 24,
-          slidesPerView: 2,
-          loop: true,
-          speed: 1000,
-          pagination: {
-            el: ".swiper-pagination",
-            clickable: true,
-          },
-          breakpoints: {
-            1500: {
-              slidesPerView: 2,
-            },
-            1199: {
-              slidesPerView: 2,
-            },
-            991: {
-              slidesPerView: 1,
-            },
-            767: {
-              slidesPerView: 1,
-            },
-            575: {
-              slidesPerView: 1,
-            },
-            0: {
-              slidesPerView: 1,
-            }
-          },
-        });
-      });
-      $(document).ready(function () {
-        var swiper_1 = new Swiper(".mySwiper-banner-four", {
-          spaceBetween: 0,
-          slidesPerView: 1,
-          loop: true,
-          speed: 500,
-          // autoplay: {
-          //   delay: 4000,
-          //   disableOnInteraction: false,
-          // },
-          // effect: "fade",
-          pagination: {
-            el: '.swiper-pagination', // For bullet pagination
-            type: 'bullets',
-            clickable: true, // Allows clicking on the bullets
-          },
+            </ul>
+        </div>
+                                    <!-- nav-area end -->
+                                    <!-- header style two End -->
+                                    <div class="right-area">
+                                        <div class="icon-area">
+                                            <div class="search">
+                                                <i class="fa-regular fa-magnifying-glass"></i>
+                                            </div>
+                                        </div>
+                                        <a href="contact.html" class="rts-btn btn-header btn-transparent">Contact Us
+                                            <img src="assets/images/icons/arrow-up-right.svg" alt="arrow">
+                                        </a>
+                                        <div class="nav-btn menu-btn">
+                                            <img src="assets/images/logo/bar.svg" alt="nav-iamge">
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- bottom header end -->
+                            </div>
+                            <!-- header right end -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
 
-        });
-        var swiper_thumb = new Swiper(".mySwiper-thumbnail", {
-          spaceBetween: 20,
-          slidesPerView: 2,
-          direction: "vertical",
-          loop: true,
-          speed: 500,
-          // autoplay: {
-          //   delay: 4000,
-          //   disableOnInteraction: false,
-          // },
-          // effect: "fade",
-          navigation: {
-            nextEl: ".swiper-button-next",
-            prevEl: ".swiper-button-prev",
-          },
-        });
+                                    <!-- nav-area end -->
+                                    
+                            </div>
+                            <!-- header right end -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <div id="side-bar" class="side-bar header-two">
+            <button class="close-icon-menu"><i class="far fa-times"></i></button>
+            <!-- inner menu area desktop start -->
+            <div class="inner-main-wrapper-desk">
+                <div class="thumbnail">
+                    <img src="assets/images/banner/04.jpg" alt="elevate">
+                </div>
+                <div class="inner-content">
+                    <h4 class="title">We Build Building and Great Constructive Homes.</h4>
+                    <p class="disc">
+                        We successfully cope with tasks of varying complexity, provide long-term guarantees and regularly
+                        master new technologies.
+                    </p>
+                    <div class="footer">
+                        <h4 class="title">Got a project in mind?</h4>
+                        <a href="contact.html" class="rts-btn btn-primary">Let's talk</a>
+                    </div>
+                </div>
+            </div>
+                <!-- mobile menu area start -->
+                <div class="mobile-menu d-block d-xl-none">
+                    <nav class="nav-main mainmenu-nav mt--30">
+                        <ul class="mainmenu metismenu" id="mobile-menu-active">
+                            <li class="has-droupdown">
+                                <a href="index.html#" class="main">Home</a>
+                                <ul class="submenu mm-collapse">
+                                    <li><a href="index.html">Demo Construction</a></li>
+                                    <li><a href="index-two.html">Demo Construction</a></li>
+                                    <li><a href="index-three.html">Demo Renovation</a></li>
+                                    <li><a href="index-four.html">Demo Building</a></li>
+                                    <li><a href="index-five.html">Demo Interior</a></li>
+                                </ul>
+                            </li>
 
-        swiper_1.controller.control = swiper_thumb;
-        swiper_thumb.controller.control = swiper_1;
+                            <li class="has-droupdown">
+                                <a href="service.html" class="main">Services</a>
+                                <ul class="submenu mm-collapse">
+                                    <li><a class="mobile-menu-link" href="service.html">Our Services</a></li>
+                                    <li><a class="mobile-menu-link" href="service-single.html">Service Single</a></li>
+                                    <li><a class="mobile-menu-link" href="service-single-two.html">Service Single 2</a></li>
+                                    <li><a class="mobile-menu-link" href="service-single-three.html">Service Single 3</a></li>
+                                    <li><a class="mobile-menu-link" href="service-single-four.html">Service Single 4</a></li>
+                                    <li><a class="mobile-menu-link" href="service-single-five.html">Service Single 5</a></li>
+                                </ul>
+                            </li>
+                            <li class="has-droupdown">
+                                <a href="index.html#" class="main">Projects</a>
+                                <ul class="submenu mm-collapse">
+                                    <li class="has-droupdown third-lvl">
+                                        <a class="main" href="index.html#">Types</a>
+                                        <ul class="submenu-third-lvl mm-collapse">
+                                            <li><a href="project.html"></a>Project</li>
+                                            <li><a href="project-slider.html"></a>Project Slider</li>
+                                            <li><a href="project-slider-2.html"></a>Project Slider 2</li>
+                                            <li><a href="project-slider-3.html"></a>Project Slider 3</li>
+                                            <li><a href="project-list.html"></a>Project List</li>
+                                            <li><a href="project-card.html"></a>Project Card</li>
+                                        </ul>
+                                    </li>
+                                    <li class="has-droupdown third-lvl">
+                                        <a class="main" href="index.html#">Layouts</a>
+                                        <ul class="submenu-third-lvl mm-collapse">
+                                            <li><a href="project-two-column.html"></a>Project 2 Columns</li>
+                                            <li><a href="project-three-column.html"></a>Project 3 Columns</li>
+                                            <li><a href="project-two-column-wide.html"></a>Project 2 Columns Wide</li>
+                                            <li><a href="project-three-column-wide.html"></a>Project 3 Columns Wide</li>
+                                            <li><a href="project-four-column.html"></a>Project 4 Columns </li>
+                                            <li><a href="project-four-column-wide.html"></a>Project 4 Columns Wide </li>
+                                        </ul>
+                                    </li>
+                                    <li class="has-droupdown third-lvl">
+                                        <a class="main" href="index.html#">Hover Type</a>
+                                        <ul class="submenu-third-lvl mm-collapse">
+                                            <li><a href="project-hide-content-col-3.html"></a>Project Hide Content</li>
+                                            <li><a href="project-hide-content.html"></a>Project Hide Content wide</li>
+                                            <li><a href="project-card-hover.html"></a>Project Card Hover</li>
+                                            <li><a href="project-zoom-slider.html"></a>Project Slider Image Zoom</li>
+                                            <li><a href="project-hide-show.html"></a>Project Hide Show</li>
+                                            <li><a href="project-slider-hover.html"></a>Project Slider Hover</li>
+                                        </ul>
+                                    </li>
+                                    <li class="has-droupdown third-lvl">
+                                        <a class="main" href="index.html#">Singles</a>
+                                        <ul class="submenu-third-lvl mm-collapse">
+                                            <li><a href="project-details.html"></a>Project Detials</li>
+                                            <li><a href="project-details-2.html"></a>Project Detials Video</li>
+                                            <li><a href="project-details-3.html"></a>Project Detials Slider</li>
+                                            <li><a href="project-details-large-image.html"></a>Large Image</li>
+                                            <li><a href="project-details-gallery.html"></a>Project Gallery</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
 
-      });
-      $(document).ready(function () {
-        var swiper = new Swiper(".mySwiper-team-4", {
-          spaceBetween: 24,
-          slidesPerView: 4,
-          loop: true,
-          speed: 1000,
-          autoplay: {
-            delay: 3000,
-            disableOnInteraction: false,
-          },
-          // mousewheel: true,
-          navigation: {
-            nextEl: ".swiper-button-next",
-            prevEl: ".swiper-button-prev",
-          },
-          pagination: {
-            el: ".swiper-pagination",
-            type: "progressbar",
-          },
-          breakpoints: {
-            1500: {
-              slidesPerView: 4,
-            },
-            1199: {
-              slidesPerView: 3,
-            },
-            991: {
-              slidesPerView: 3,
-            },
-            767: {
-              slidesPerView: 2,
-            },
-            575: {
-              slidesPerView: 1,
-            },
-            0: {
-              slidesPerView: 1,
-            }
-          },
-        });
-      });
-      $(document).ready(function () {
-        var swiper_1 = new Swiper(".mySwiper-banner-three", {
-          spaceBetween: 0,
-          slidesPerView: 1,
-          loop: true,
-          speed: 500,
-          autoplay: {
-            delay: 4000,
-            disableOnInteraction: false,
-          },
-          effect: "fade",
-          pagination: {
-            el: '.swiper-pagination', // For bullet pagination
-            type: 'bullets',
-            clickable: true, // Allows clicking on the bullets
-          },
+                            <li class="has-droupdown">
+                                <a href="index.html#" class="main">News & Insights</a>
+                                <ul class="submenu mm-collapse">
+                                    <li><a href="blog-grid.html">News Grid</a></li>
+                                    <li><a href="blog-list.html">News List</a></li>
+                                    <li><a href="blog-details.html">News Details</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="contact.html" class="main">Contact Us</a>
+                            </li>
+                        </ul>
+                    </nav>
 
-        });
-        swiper_1.on('slideChange', function () {
-          console.log('slider moved');
-          var activeslide = swiper_1.realIndex;
-          var totalslide = swiper_1.slides.length;
-          console.log(activeslide);
-          $(".activeslide").html('0' + (activeslide + 1));
-          $(".totalslide").html('0' + (totalslide));
-        });
-      });
+                    <div class="social-wrapper-one">
+                        <ul>
+                            <li>
+                                <a href="index.html#">
+                                    <i class="fa-brands fa-facebook-f"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="index.html#">
+                                    <i class="fa-brands fa-linkedin-in"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- mobile menu area end -->
+        </div>
+    <!-- header area end -->
 
-    },
+    <!-- rts banner area strart -->
+    <div class="rts-banner-area rts-section-gap rts-breadcrumb-area  position-relative">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb-area-inner">
+                        <span class="water-text">Approach</span>
+                        <h1 class="title">
+                            Proconstuction
+                        </h1>
+                        <div class="nav-area-navigation">
+                            <a href="index.html#">home</a>
+                            <a class="current" href="index.html#">Approach</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- rts banner area end -->
 
-    wowActive: function () {
-      new WOW().init();
-    },
+    <!-- service details area start -->
+    <div class="service-details-area rts-section-gapTop pb--60">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="service-details-main-wrapper-thumbnail">
+                        <img src="assets/images/service/17.webp" alt="service">
+                    </div>
+                    <div class="service-details-inner-area-wrapper">
+                        <h4 class="title">Strategic Preconstruction Planning</h4>
+                        <p class="disc">
+                            Every successful construction project starts with thorough preconstruction planning. At Takes Two Construction, our preconstruction services establish the foundation for project success through comprehensive analysis, strategic planning, and collaborative decision-making. We work closely with owners, architects, and design professionals to deliver optimal project outcomes while controlling costs and mitigating risks.
+                        </p>
+                        <p class="disc">
+                            Our experienced preconstruction professionals bring deep construction knowledge to the early project phases, identifying value engineering opportunities, optimizing construction methods, and enhancing project feasibility. Through systematic analysis and proactive planning, we position your project for efficient execution and successful delivery.
+                        </p>
+                        <div class="service-main-wrapper-tabs">
+                            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab"
+                                        data-bs-target="#home" type="button" role="tab" aria-controls="home"
+                                        aria-selected="true">Our Preconstruction Services</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="profile-tab" data-bs-toggle="tab"
+                                        data-bs-target="#profile" type="button" role="tab" aria-controls="profile"
+                                        aria-selected="false">Preconstruction Benefits</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="contact-tab" data-bs-toggle="tab"
+                                        data-bs-target="#contact" type="button" role="tab" aria-controls="contact"
+                                        aria-selected="false">Our Preconstruction Process</button>
+                                </li>
+                            </ul>
+                            <div class="tab-content" id="myTabContent">
+                                <div class="tab-pane fade show active" id="home" role="tabpanel"
+                                    aria-labelledby="home-tab">
+                                    <div class="inner-wrapper-tab-service-wrapper">
+                                        <div class="single">
+                                            <div class="icon">
+                                                <i class="fa-solid fa-check"></i>
+                                            </div>
+                                            <div class="inner-content">
+                                                <b>Design Collaboration & Value Engineering:</b> Our team partners with architects and engineers during design development to optimize building systems, enhance constructability, and identify cost-effective alternatives that maintain design quality while improving project value.
+                                            </div>
+                                        </div>
+                                        <div class="single">
+                                            <div class="icon">
+                                                <i class="fa-solid fa-check"></i>
+                                            </div>
+                                            <div class="inner-content">
+                                                <b>Comprehensive Cost Analysis:</b> We provide detailed, accurate cost estimates and budget development services that include material quantities, labor requirements, equipment needs, and contingency planning to ensure realistic project budgets and effective cost management.
+                                            </div>
+                                        </div>
+                                        <div class="single">
+                                            <div class="icon">
+                                                <i class="fa-solid fa-check"></i>
+                                            </div>
+                                            <div class="inner-content">
+                                                <b>Master Schedule Development:</b> Our scheduling experts create comprehensive project timelines that integrate design milestones, permit approvals, material procurement, and construction sequences while identifying critical path activities and potential scheduling conflicts.
+                                            </div>
+                                        </div>
+                                        <div class="single">
+                                            <div class="icon">
+                                                <i class="fa-solid fa-check"></i>
+                                            </div>
+                                            <div class="inner-content">
+                                                <b>Constructability Analysis:</b> Our field-experienced professionals conduct thorough design reviews to identify construction challenges, recommend building sequence improvements, and suggest design modifications that enhance efficiency and reduce construction complexity.
+                                            </div>
+                                        </div>
+                                        <div class="single">
+                                            <div class="icon">
+                                                <i class="fa-solid fa-check"></i>
+                                            </div>
+                                            <div class="inner-content">
+                                                <b>Regulatory Navigation & Permitting:</b> We manage the complex permitting landscape, coordinate with municipal agencies, ensure code compliance, and secure all necessary approvals while maintaining project schedules and avoiding regulatory delays.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
 
-    stickyHeader: function (e) {
-      $(window).scroll(function () {
-        if ($(this).scrollTop() > 50) {
-          $('.header--sticky').addClass('sticky')
-        } else {
-          $('.header--sticky').removeClass('sticky')
-        }
-      })
-    },
+                                    <div class="inner-wrapper-tab-service-wrapper">
+                                        <div class="single">
+                                            <div class="icon">
+                                                <i class="fa-solid fa-check"></i>
+                                            </div>
+                                            <div class="inner-content">
+                                                <b>Proactive Risk Management:</b> Early identification of potential project risks, development of mitigation strategies, and contingency planning prevent costly surprises and change orders during construction execution.
+                                            </div>
+                                        </div>
+                                        <div class="single">
+                                            <div class="icon">
+                                                <i class="fa-solid fa-check"></i>
+                                            </div>
+                                            <div class="inner-content">
+                                                <b>Budget Certainty:</b> Comprehensive preconstruction analysis delivers reliable cost projections, reduces budget contingencies, and minimizes the risk of cost overruns through detailed planning and accurate estimating.
+                                            </div>
+                                        </div>
+                                        <div class="single">
+                                            <div class="icon">
+                                                <i class="fa-solid fa-check"></i>
+                                            </div>
+                                            <div class="inner-content">
+                                                <b>Accelerated Delivery:</b> Strategic preconstruction planning optimizes construction sequences, reduces project duration, and enables faster project delivery through efficient resource coordination and logistics planning.
+                                            </div>
+                                        </div>
+                                        <div class="single">
+                                            <div class="icon">
+                                                <i class="fa-solid fa-check"></i>
+                                            </div>
+                                            <div class="inner-content">
+                                                <b>Integrated Team Approach:</b> Early contractor engagement fosters collaborative relationships between owners, designers, and builders, resulting in improved communication, shared accountability, and superior project outcomes.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
 
-    backToTopInit: function () {
-      $(document).ready(function () {
-        "use strict";
+                                    <div class="inner-wrapper-tab-service-wrapper">
+                                        <div class="single">
+                                            <div class="icon">
+                                                <i class="fa-solid fa-check"></i>
+                                            </div>
+                                            <div class="inner-content">
+                                                <b>Project Evaluation & Goal Setting:</b> We conduct comprehensive project assessment including site analysis, program requirements review, budget parameters, and schedule objectives to establish clear project success criteria and strategic direction.
+                                            </div>
+                                        </div>
+                                        <div class="single">
+                                            <div class="icon">
+                                                <i class="fa-solid fa-check"></i>
+                                            </div>
+                                            <div class="inner-content">
+                                                <b>Collaborative Design Development:</b> We integrate with the design team from concept through design development, providing real-time constructability feedback, cost guidance, and value engineering recommendations to optimize design decisions.
+                                            </div>
+                                        </div>
+                                        <div class="single">
+                                            <div class="icon">
+                                                <i class="fa-solid fa-check"></i>
+                                            </div>
+                                            <div class="inner-content">
+                                                <b>Detailed Planning & Analysis:</b> We develop comprehensive cost models and integrated project schedules that account for all project phases, identify critical dependencies, and establish realistic milestones for successful project execution.
+                                            </div>
+                                        </div>
+                                        <div class="single">
+                                            <div class="icon">
+                                                <i class="fa-solid fa-check"></i>
+                                            </div>
+                                            <div class="inner-content">
+                                                <b>Strategic Procurement Planning:</b> We identify long-lead items, develop procurement strategies for major building systems, establish vendor relationships, and coordinate material delivery schedules to support construction efficiency.
+                                            </div>
+                                        </div>
+                                        <div class="single">
+                                            <div class="icon">
+                                                <i class="fa-solid fa-check"></i>
+                                            </div>
+                                            <div class="inner-content">
+                                                <b>Construction Launch Preparation:</b> We ensure complete project readiness including final permit approvals, contractor mobilization, material procurement completion, and quality control systems implementation before construction commencement.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- service details area end -->
 
-        var progressPath = document.querySelector('.progress-wrap path');
-        var pathLength = progressPath.getTotalLength();
-        progressPath.style.transition = progressPath.style.WebkitTransition = 'none';
-        progressPath.style.strokeDasharray = pathLength + ' ' + pathLength;
-        progressPath.style.strokeDashoffset = pathLength;
-        progressPath.getBoundingClientRect();
-        progressPath.style.transition = progressPath.style.WebkitTransition = 'stroke-dashoffset 10ms linear';
-        var updateProgress = function () {
-          var scroll = $(window).scrollTop();
-          var height = $(document).height() - $(window).height();
-          var progress = pathLength - (scroll * pathLength / height);
-          progressPath.style.strokeDashoffset = progress;
-        }
-        updateProgress();
-        $(window).scroll(updateProgress);
-        var offset = 50;
-        var duration = 550;
-        jQuery(window).on('scroll', function () {
-          if (jQuery(this).scrollTop() > offset) {
-            jQuery('.progress-wrap').addClass('active-progress');
-          } else {
-            jQuery('.progress-wrap').removeClass('active-progress');
-          }
-        });
-        jQuery('.progress-wrap').on('click', function (event) {
-          event.preventDefault();
-          jQuery('html, body').animate({ scrollTop: 0 }, duration);
-          return false;
-        })
-
-
-      });
-    },
-
-    sideMenu: function () {
-
-      // collups menu side right
-      $(document).on('click', '.menu-btn', function () {
-        $("#side-bar").addClass("show");
-        $("#anywhere-home").addClass("bgshow");
-      });
-      $(document).on('click', '.close-icon-menu', function () {
-        $("#side-bar").removeClass("show");
-        $("#anywhere-home").removeClass("bgshow");
-      });
-      $(document).on('click', '#anywhere-home', function () {
-        $("#side-bar").removeClass("show");
-        $("#anywhere-home").removeClass("bgshow");
-      });
-      $(document).on('click', '.onepage .mainmenu li a', function () {
-        $("#side-bar").removeClass("show");
-        $("#anywhere-home").removeClass("bgshow");
-      });
-    },
-
-    menuCurrentLink: function () {
-      var currentPage = location.pathname.split("/"),
-        current = currentPage[currentPage.length - 1];
-      $('.parent-nav li > a').each(function () {
-        var $this = $(this);
-        if ($this.attr('href') === current) {
-          $this.addClass('active');
-          $this.parents('.has-dropdown').addClass('menu-item-open')
-        }
-      });
-    },
-
-    imageSwipe: function () {
-      $(document).ready(function () {
-        "use strict";
-
-
-        var e = {
-          init: function () {
-            e.aosFunc();
-
-
-          },
-
-          isVariableDefined: function (el) {
-            return typeof !!el && (el) != 'undefined' && el != null;
-          },
-
-          select: function (selectors) {
-            return document.querySelector(selectors);
-          },
-
-          // START: 08 AOS Animation
-          aosFunc: function () {
-            var aos = e.select('.aos');
-            if (e.isVariableDefined(aos)) {
-              AOS.init({
-                duration: 500,
-                easing: 'ease-out-quart',
-                once: true
-              });
-            }
-          },
-          // END: AOS Animation
-
-
-        };
-        e.init();
-      });
-
-    },
-
-    niceSelect: function () {
-      $(document).ready(function () {
-        $('select').niceSelect();
-      });
-    },
-
-    portfolioHOver: function () {
-      document.addEventListener('DOMContentLoaded', () => {
-        // Get all project elements
-        const projectElements = document.querySelectorAll('.single-project-3');
-        // Get all image elements
-        const imageElements = document.querySelectorAll('.thumbnail-portfolio-3 img');
-
-        projectElements.forEach((project, index) => {
-          project.addEventListener('mouseenter', () => {
-            // Remove active class from all images
-            imageElements.forEach(image => image.classList.remove('active'));
-            // Add active class to the corresponding image
-            if (imageElements[index]) {
-              imageElements[index].classList.add('active');
-            }
-          });
-        });
-      });
-
-    },
-
-    cartBarshow: function () {
-      // Cart Bar show & hide
-      $(document).on('click', '.cart-icon', function () {
-        $(".cart-bar").addClass("show");
-        $("#anywhere-home").addClass("bgshow");
-      });
-      $(document).on('click', '.close-cart', function () {
-        $(".cart-bar").removeClass("show");
-        $("#anywhere-home").removeClass("bgshow");
-      });
-      $(document).on('click', '#anywhere-home', function () {
-        $(".cart-bar").removeClass("show");
-        $("#anywhere-home").removeClass("bgshow");
-      });
+ <!-- why choose us area start -->
+    <div class="why-choose-us-area rts-section-gapBottom">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-xl-6 col-lg-12 pr--60 pr_md--0 pr_sm--0">
+                    <div class="reveal-item overflow-hidden aos-init">
+                        <div class="reveal-animation reveal-end reveal-primary aos aos-init" data-aos="reveal-end">
+                        </div>
+                        <img src="assets/images/service/01.webp" alt="journey-area">
+                        <div class="vedio-icone">
+                            <a class="video-play-button play-video" href="index.html#">
+                                <span></span>
+                            </a>
+                            <div class="video-overlay">
+                                <a class="video-overlay-close">×</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-6 col-lg-12 pt_md--30 pt_sm--50">
+                    <div class="how-we-works-wrappers">
+                        <div class="title-wrapper-left mb--50">
+                            <span class="pre">How We Works</span>
+                            <h2 class="title">
+                                How TTC Preconstruction <br>
+                                Sets Projects Up for Success
+                            </h2>
+                        </div>
+                        <div class="single-choose-us-one">
+                            <div class="icon">
+                                <img src="assets/images/service/07.svg" alt="service">
+                                <span>1</span>
+                            </div>
+                            <div class="info-wrapper">
+                                <h5 class="title">Consultation & Planning</h5>
+                                <p class="disc">We begin with thorough project evaluation including stakeholder alignment sessions, site analysis, program verification, and constraint identification to establish clear project parameters and success metrics.</p>
+                            </div>
+                        </div>
+                        <div class="single-choose-us-one">
+                            <div class="icon">
+                                <img src="assets/images/service/08.svg" alt="service">
+                                <span>2</span>
+                            </div>
+                            <div class="info-wrapper">
+                                <h5 class="title">Design & Pre-Construction</h5>
+                                <p class="disc">Our team provides constructability reviews, value engineering, cost estimating, and schedule development while coordinating design phases and permit processes for seamless project progression.</p>
+                            </div>
+                        </div>
+                        <div class="single-choose-us-one">
+                            <div class="icon">
+                                <img src="assets/images/service/09.svg" alt="service">
+                                <span>3</span>
+                            </div>
+                            <div class="info-wrapper">
+                                <h5 class="title">Construction & Delivery</h5>
+                                <p class="disc">With comprehensive planning complete, we transition seamlessly into construction with optimized schedules, vetted contractors, and detailed project documentation ensuring efficient execution and successful delivery.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- why choose us area end -->
 
 
 
-      $(function () {
-        $(".button").on("click", function () {
-          var $button = $(this);
-          var $parent = $button.parent();
-          var oldValue = $parent.find('.input').val();
+    <div class="rts-call-to-action rts-section-gapBottom">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="call-to-action-area-service bg_image">
+                        <div class="inner">
+                            <h3 class="title">Strategic Preconstruction Planning</h3>
+                            <p class="disc">
+                                Set your project up for success with comprehensive preconstruction services. Our strategic planning approach ensures optimal outcomes through detailed analysis, collaborative design, and proactive risk management.
+                            </p>
+                            <a href="contact.html" class="rts-btn btn-primary">Start Your Project</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-          if ($button.text() == "+") {
-            var newVal = parseFloat(oldValue) + 1;
-          } else {
-            // Don't allow decrementing below zero
-            if (oldValue > 1) {
-              var newVal = parseFloat(oldValue) - 1;
-            } else {
-              newVal = 1;
-            }
-          }
-          $parent.find('a.add-to-cart').attr('data-quantity', newVal);
-          $parent.find('.input').val(newVal);
-        });
-      });
-
-    },
-
-    galleryPopUpmag: function () {
-      $('.gallery-image').magnificPopup({
-        type: 'image',
-        gallery: {
-          enabled: true
-        }
-      });
-    },
-
-    rtlToggle: function () {
-
-      $(document).ready(function () {
-        // Retrieve the saved direction from localStorage
-        const savedDir = localStorage.getItem("pageDirection") || "ltr"; // Default to "ltr"
-        $("body").attr("dir", savedDir);
-
-        // Update button visibility based on saved direction
-        if (savedDir === "rtl") {
-          $(".rtl").removeClass("show");
-          $(".ltr").addClass("show");
-        } else {
-          $(".rtl").addClass("show");
-          $(".ltr").removeClass("show");
-        }
-
-        // Toggle direction and save state on button click
-        $(".rtl-ltr-switcher-btn").on("click", function () {
-          const currentDir = $("body").attr("dir");
-          const newDir = currentDir === "rtl" ? "ltr" : "rtl";
-
-          // Update body direction
-          $("body").attr("dir", newDir);
-
-          // Toggle button visibility
-          $(".rtl").toggleClass("show");
-          $(".ltr").toggleClass("show");
-
-          // Save the new direction in localStorage
-          localStorage.setItem("pageDirection", newDir);
-        });
-      });
-
-    },
-
-  }
-
-  $(document).ready(function() {
-    rtsJs.m();
-  });
-})(jQuery, window)
+   
 
 
 
+    <!-- rts footer area start -->
+    <!-- rts footer area start -->
+<div class="rts-footer-area rts-section-gapTop bg_footer-1 bg_image">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="contact-area-footer-top">
+                    <div class="single-contact-area-box">
+                        <div class="icon">
+                            <i class="fas fa-phone-alt"></i>
+                        </div>
+                        <h6 class="title">Call Us Now</h6>
+                       <p><a href="tel:+19723609250">+1(972) 360-9250</a></p>
+                    </div>
+                    <div class="single-contact-area-box">
+                        <div class="icon">
+                            <i class="fa-solid fa-clock"></i>
+                        </div>
+                        <h6 class="title">Office Time</h6>
+                        <p>Mon-Fri: 8:00 am to 6:00 pm <br>
+                            Sat: 9:00 am to 2:00 pm</p>
+                    </div>
+                    <div class="single-contact-area-box">
+                        <div class="icon">
+                            <i class="fa-solid fa-envelope"></i>
+                        </div>
+                        <h6 class="title">Need Support</h6>
+                       <p> <a href="mailto:info@takestwoconstruction.com">info@takestwoconstruction.com</a></p>
+                    </div>
+                    <div class="single-contact-area-box">
+                        <div class="icon">
+                            <i class="fa-sharp fa-solid fa-location-dot"></i>
+                        </div>
+                        <h6 class="title">Our Address</h6>
+                        <p>P.O. Box 292293 Lewisville, TX 75029</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-full">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="nav-footer-wrapper-one">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="footer-wrapper-left-one">
+                    <a href="index.html#" class="logo">
+                        <img src="assets/images/logo/01.svg" alt="logo">
+                    </a>
+                    <p class="disc">
+                        we are committed to elevating the construction experience for our clients. With a passion for
+                        innovation and quality craftsmanship,
+                    </p>
+                    <div class="social-area-wrapper-one">
+                        <ul>
+                            <li><a href="index.html#"><i class="fa-brands fa-facebook-f"></i></a></li>
+                            <li><a href="index.html#"><i class="fa-brands fa-linkedin-in"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="footer-wrapper-right">
+                    <div class="single-nav-area-footer use-link">
+                        <h4 class="title">Useful Links</h4>
+                        <ul>
+                            <li><a href="about.html"><i class="fa-regular fa-arrow-right-long"></i>Our Company</a></li>
+                            <li><a href="service.html"><i class="fa-regular fa-arrow-right-long"></i>Our Services</a></li>
+                            <li><a href="project.html"><i class="fa-regular fa-arrow-right-long"></i>Projects</a></li>
+                            <li><a href="blog-grid.html"><i class="fa-regular fa-arrow-right-long"></i>News & Insights</a></li>
+                            <li><a href="careers.html"><i class="fa-regular fa-arrow-right-long"></i>Careers</a></li>
+                        </ul>
+                    </div>
+                    <div class="single-nav-area-footer use-link">
+                        <h4 class="title">Our Services</h4>
+                        <ul>
+                            <li><a href="service.html"><i class="fa-regular fa-arrow-right-long"></i>Custom Home Renovations </a></li>
+                            <li><a href="service.html"><i class="fa-regular fa-arrow-right-long"></i>Custom Pools & Spas</a></li>
+                            <li><a href="service.html"><i class="fa-regular fa-arrow-right-long"></i>Outdoor Living Spaces</a></li>
+                            <li><a href="service.html"><i class="fa-regular fa-arrow-right-long"></i>Concrete & Masonry</a></li>
+                            <li><a href="service.html"><i class="fa-regular fa-arrow-right-long"></i>Roofing & Exterior Upgrades</a></li>
+                        </ul>
+                    </div>
+                    <div class="single-nav-area-footer news-letter">
+                        <h4 class="title">Newsletter</h4>
+                        <p>Get the latest updates on our projects, industry insights, and construction trends delivered straight to your inbox.</p>
+                        <form action="index.html#">
+                            <input type="email" placeholder="Email Address" required>
+                            <button class="btn-subscribe mt--15">Subscribe Now</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-full copyright-area-one">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="copyright-wrapper">
+                                <p class="mb-0">Copyright &copy;
+                                    <script>
+                                        document.write(
+                                            new Date().getFullYear()
+                                        )
+                                    </script>
+                                   Takes Two Construction. All Rights Reserved.
+                                </p>
+                                <div class="right-nav">
+                                    <ul>
+                                        <li><a href="terms-of-condition.html">Terms of use </a></li>
+                                        <li><a href="privacy-policy.html"> Privacy</a></li>
+                                        <li><a href="privacy-policy.html">Environmental Policy</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- rts footer area end -->
+
+    <!-- progress area start -->
+<!-- <div id="elevate-load">
+    <div class="loader-wrapper">
+        <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+</div> -->
+<!-- progress area end -->
+
+<!-- rtl btn area start -->
+<div class="rtl-ltr-switcher-btn">
+    <span class="rtl show">View RTL</span>
+    <span class="ltr">View LTR</span>
+</div>
+<!-- rtl btn area end -->
+
+<!-- progress area start -->
+<div class="progress-wrap">
+    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"
+            style="transition: stroke-dashoffset 10ms linear 0s; stroke-dasharray: 307.919, 307.919; stroke-dashoffset: 307.919;">
+        </path>
+    </svg>
+</div>
+<!-- progress area end -->
 
 
+<!-- offcanvase search -->
+<div class="search-input-area">
+    <div class="container">
+        <div class="search-input-inner">
+            <div class="input-div">
+                <input class="search-input autocomplete" type="text" placeholder="Search by keyword or #">
+                <button><i class="far fa-search"></i></button>
+            </div>
+        </div>
+    </div>
+    <div id="close" class="search-close-icon"><i class="far fa-times"></i></div>
+</div>
+<div id="anywhere-home" class="">
+</div>
 
+<!-- scripts -->
+<script src="assets/js/plugins/jquery.js"></script>
+<script src="assets/js/vendor/bootstrap.min.js"></script>
 
+<script src="assets/js/plugins/odometer.js"></script>
+<script src="assets/js/plugins/jquery-appear.js"></script>
+
+<script src="assets/js/plugins/metismenu.js"></script>
+<script src="assets/js/plugins/swiper.js"></script>
+<script src="assets/js/plugins/aos.js"></script>
+<script src="assets/js/plugins/nice-select.js"></script>
+<script src="assets/js/plugins/smooth-scroll.js"></script>
+<script src="assets/js/vendor/waw.js"></script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAuSiPhoDaOJ7aqtJVtQhYhLzwwJ7rQlmA"></script>
+<script src="assets/js/vendor/marker.js"></script>
+<script src="assets/js/vendor/map-content.js"></script>
+<script src="assets/js/vendor/info-box.js"></script>
+<script src="assets/js/plugins/jquery.magnific-popup.min.js"></script>
+
+<script src="assets/js/plugins/contact.form.js"></script>
+
+<script src="assets/js/main.js"></script>
+</body>
+
+</html>
