@@ -1,0 +1,12 @@
+{
+  "name": "takes-two-construction",
+  "version": "1.0.0",
+  "description": "Takes Two Construction Website",
+  "scripts": {
+    "dev": "npx serve . -p 3000",
+    "start": "npx serve . -p 3000"
+  },
+  "devDependencies": {
+    "serve": "^14.2.1"
+  }
+}
